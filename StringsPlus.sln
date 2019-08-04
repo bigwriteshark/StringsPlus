@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "string+", "string+\string+.vcxproj", "{F212D228-CD3D-4FB5-B0C3-0982159FEA67}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stringsplus", "stringsplus\stringsplus.vcxproj", "{F212D228-CD3D-4FB5-B0C3-0982159FEA67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
