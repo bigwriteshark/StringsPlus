@@ -19,6 +19,9 @@
 #include <iostream>
 #include <cstring>
 #include <sstream>
+#include <list>
+#include <tuple>
+#include <fstream>
 
 #define MAX_PATH 300
 
@@ -32,10 +35,20 @@ enum enumEncode
 	Unicode,
 };
 
+
+//struct of param, analysis argv
 struct struParam
 {
 	char full_path[MAX_PATH];
 	char file_name[MAX_PATH];
+	bool is_quiet;
+
+	struParam()
+	{
+		memset(full_path, 0, MAX_PATH);
+		memset(file_name, 0, MAX_PATH);
+		is_quiet = false;
+	}
 
 	string tostring()
 	{
@@ -46,9 +59,13 @@ struct struParam
 		return ss.str();
 	}
 };
+
+
+const char* ParamFileName = "-n";
+const char* ParamQuiet = "-q";
+const char* ParamHelp = "-h";
 struParam g_Param;
-const char* ParamFileName = "-name";
-const char* ParamOption = "-o";
+list<tuple<string, string, string>> g_lstFiles; //0.File path 1.File name 2.File full name
 
 
 //Check and process argv
@@ -58,10 +75,10 @@ bool ProcessParams(int argc, const char* argv[], struParam& param);
 bool FindParameterValue(int argc, const char* argv[], const char* paramName, char* paramValue);
 
 //Enum files from a folder
-void EnumFilesFromFolder(string folderPath, int depth);
+void EnumFilesFromFolder(string folderPath, string wildcard, int depth);
 
 //Scan file and find unicode string or ascii string
-bool GetStringsFromFile(const char * filename, enumEncode encode);
+bool GetStringsFromFile(tuple<string, string, string>& file);
 
 //Show help message
 void ShowHelp();
@@ -72,10 +89,21 @@ int main(int argc, const char* argv[])
 {
 	bool bret;
 
-	ProcessParams(argc, argv, g_Param);
-	cout << g_Param.tostring() << endl;
-	EnumFilesFromFolder("./", 0);
+	//Check and process params
+	if (!ProcessParams(argc, argv, g_Param))
+	{
+		return 0;
+	}
 
+	//Get file list
+	g_lstFiles.clear();
+	EnumFilesFromFolder(g_Param.full_path, g_Param.file_name, 0);
+
+	//Process each of the file
+	for (auto f : g_lstFiles)
+	{
+		GetStringsFromFile(f);
+	}
 
 	system("pause");
 	return 0;
@@ -99,9 +127,14 @@ bool ProcessParams(int argc, const char* argv[], struParam& param)
 	{
 		strcpy(param.file_name, value);
 	}
-	else
+	if (FindParameterValue(argc, argv, ParamQuiet, value))
 	{
-		strcpy(param.file_name, "*");
+		param.is_quiet = true;
+	}
+	if (FindParameterValue(argc, argv, ParamHelp, value))
+	{
+		ShowHelp();
+		return false;
 	}
 
 	return true;
@@ -109,11 +142,11 @@ bool ProcessParams(int argc, const char* argv[], struParam& param)
 
 
 //Enum files from a folder
-void EnumFilesFromFolder(string folderPath, int depth)
+void EnumFilesFromFolder(string folderPath, string wildcard, int depth)
 {
 #ifdef _WIN32
 	_finddata_t FileInfo;
-	string strfind = folderPath + "\\*";
+	string strfind = folderPath + "\\" + wildcard;
 	long Handle = _findfirst(strfind.c_str(), &FileInfo);
 
 	if (Handle == -1L)
@@ -129,13 +162,14 @@ void EnumFilesFromFolder(string folderPath, int depth)
 			if ((depth - 1 > 0) && (strcmp(FileInfo.name, ".") != 0) && (strcmp(FileInfo.name, "..") != 0))
 			{
 				string newPath = folderPath + "\\" + FileInfo.name;
-				EnumFilesFromFolder(newPath, depth - 1);
+				EnumFilesFromFolder(newPath, wildcard, depth - 1);
 			}
 		}
 		else
 		{
 			string filename = (folderPath + "\\" + FileInfo.name);
-			cout << folderPath << "\\" << FileInfo.name << " " << endl;
+			g_lstFiles.push_back(make_tuple(folderPath, FileInfo.name, filename));
+			//cout << folderPath << "\\" << FileInfo.name << " " << endl;
 		}
 	} while (_findnext(Handle, &FileInfo) == 0);
 
@@ -193,8 +227,104 @@ bool FindParameterValue(int argc, const char* argv[], const char* paramName, cha
 
 
 //Scan file and find unicode string or ascii string
-bool GetStringsFromFile(const char * filename, enumEncode encode)
+bool GetStringsFromFile(tuple<string, string, string>& file)
 {
+
+	string fname = std::get<2>(file);
+	string oname = std::get<0>(file) + string("\/t.") + std::get<1>(file) + string(".txt");
+	ifstream io = ifstream(fname, std::ios::binary);
+	ofstream oo = ofstream(oname);
+	list<unsigned char> lstAStr;
+	int pos = 0;
+
+
+	auto ProcessString = [&]()
+	{
+		if (lstAStr.size() < 4)
+		{
+			lstAStr.clear();
+			return;
+		}
+
+		oo << "\t" << pos << "\t\t";
+		while (!lstAStr.empty())
+		{
+			unsigned char c = lstAStr.front();
+			if(!g_Param.is_quiet) printf("%c", c);
+			oo.put(c);
+			lstAStr.pop_front();
+		}
+		oo << endl;
+		if (!g_Param.is_quiet) printf("\n");
+	};
+
+
+	//ascii strings
+	{
+		unsigned char c;
+		io.seekg(0, ios::beg);
+		oo << "\nASCII string:" << endl;
+		pos = 0;
+		while (!io.eof())
+		{
+			c = io.get();
+			pos++;
+
+			if (isprint(c))
+			{
+				lstAStr.push_back(c);
+			}
+			else
+			{
+				ProcessString();
+			}
+		}
+		oo << endl;
+		oo << endl;
+	}
+
+	//unicode strings
+	{
+		unsigned char c;
+		io.clear();
+		io.seekg(0, ios::beg);
+		oo << "\nUnicode string:" << endl;
+		pos = 0;
+		while (!io.eof())
+		{
+			c = io.get();
+			pos++;
+			if (isprint(c))
+			{
+				if (io.eof()) break;
+				unsigned d = io.get();
+				if (d == 0)
+				{
+					lstAStr.push_back(c);
+					lstAStr.push_back(' ');
+				}
+				else
+				{
+					ProcessString();
+				}
+			}
+			else if (c == 0)
+			{
+				if (io.eof()) break;
+				unsigned d = io.get();
+				if (d == 0)
+				{
+					ProcessString();
+				}
+			}
+		}
+		oo << endl;
+		oo << endl;
+	}
+
+	io.close();
+	oo.close();
+
 	return true;
 }
 
@@ -202,10 +332,16 @@ bool GetStringsFromFile(const char * filename, enumEncode encode)
 //Show help message
 void ShowHelp()
 {
-	printf("\nHelp:                                            ");
+	printf("\nFormat:                                                        ");
+	printf("\n    $strings+ [path] [opt param]                               ");
+	printf("\n         opt: -n [filename] file name with wildcard.           ");
+	printf("\n         opt: -s include sub directory.                        ");
+	printf("\n         opt: -q be quiet, no output message.                  ");
+	printf("\n         opt: -h show help message          .                  ");
+	printf("\nSample:                                                        ");
 	printf("\n    1. $strings+ [path]                          ");
-	printf("\n    1. $strings+ [path] -name [filename]         ");
-	printf("\n    1. $strings+ [path] -name [*.*]              ");
+	printf("\n    2. $strings+ [path] -name [filename]         ");
+	printf("\n    3. $strings+ [path] -name [*.*]              ");
 	printf("\n    3. $strings+ [path] -name [*.*] -r opt       ");
 	printf("\n");
 }
