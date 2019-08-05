@@ -88,6 +88,8 @@ void ShowHelp();
 int main(int argc, const char* argv[])
 {
 	bool bret;
+	unsigned char ccc = 0xd6;
+	int vvv = isprint(ccc);
 
 	//Check and process params
 	if (!ProcessParams(argc, argv, g_Param))
@@ -231,7 +233,7 @@ bool GetStringsFromFile(tuple<string, string, string>& file)
 {
 
 	string fname = std::get<2>(file);
-	string oname = std::get<0>(file) + string("\/t.") + std::get<1>(file) + string(".txt");
+	string oname = std::get<0>(file) + string("/t.") + std::get<1>(file) + string(".txt");
 	ifstream io = ifstream(fname, std::ios::binary);
 	ofstream oo = ofstream(oname);
 	list<unsigned char> lstAStr;
