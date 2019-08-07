@@ -42,12 +42,14 @@ struct struParam
 	char full_path[MAX_PATH];
 	char file_name[MAX_PATH];
 	bool is_quiet;
+	int filter_length;
 
 	struParam()
 	{
 		memset(full_path, 0, MAX_PATH);
 		memset(file_name, 0, MAX_PATH);
 		is_quiet = false;
+		filter_length = 2;
 	}
 
 	string tostring()
@@ -60,9 +62,10 @@ struct struParam
 	}
 };
 
-
+const wchar_t* ll = L"lavender my love";
 const char* ParamFileName = "-n";
 const char* ParamQuiet = "-q";
+const char* ParamFilterLength = "-l";
 const char* ParamHelp = "-h";
 struParam g_Param;
 list<tuple<string, string, string>> g_lstFiles; //0.File path 1.File name 2.File full name
@@ -125,14 +128,27 @@ bool ProcessParams(int argc, const char* argv[], struParam& param)
 	strcpy(param.full_path, argv[1]);
 
 	char value[MAX_PATH];
+
+	memset(value, 0, MAX_PATH);
 	if (FindParameterValue(argc, argv, ParamFileName, value))
 	{
 		strcpy(param.file_name, value);
 	}
+
+	memset(value, 0, MAX_PATH);
 	if (FindParameterValue(argc, argv, ParamQuiet, value))
 	{
 		param.is_quiet = true;
 	}
+
+	memset(value, 0, MAX_PATH);
+	if (FindParameterValue(argc, argv, ParamFilterLength, value))
+	{
+		int len = atoi(value);
+		param.filter_length = (len < 2 ? len = 2 : len);
+	}
+
+	memset(value, 0, MAX_PATH);
 	if (FindParameterValue(argc, argv, ParamHelp, value))
 	{
 		ShowHelp();
@@ -242,13 +258,13 @@ bool GetStringsFromFile(tuple<string, string, string>& file)
 
 	auto ProcessString = [&]()
 	{
-		if (lstAStr.size() < 4)
+		if (lstAStr.size() < g_Param.filter_length)
 		{
 			lstAStr.clear();
 			return;
 		}
 
-		oo << "\t" << pos << "\t\t";
+		oo << "\t" << pos-lstAStr.size() << "\t\t";
 		while (!lstAStr.empty())
 		{
 			unsigned char c = lstAStr.front();
@@ -300,6 +316,7 @@ bool GetStringsFromFile(tuple<string, string, string>& file)
 			{
 				if (io.eof()) break;
 				unsigned d = io.get();
+				pos++;
 				if (d == 0)
 				{
 					lstAStr.push_back(c);
@@ -310,14 +327,10 @@ bool GetStringsFromFile(tuple<string, string, string>& file)
 					ProcessString();
 				}
 			}
-			else if (c == 0)
+			else
 			{
 				if (io.eof()) break;
-				unsigned d = io.get();
-				if (d == 0)
-				{
-					ProcessString();
-				}
+				ProcessString();
 			}
 		}
 		oo << endl;
@@ -334,17 +347,26 @@ bool GetStringsFromFile(tuple<string, string, string>& file)
 //Show help message
 void ShowHelp()
 {
-	printf("\nFormat:                                                        ");
-	printf("\n    $strings+ [path] [opt param]                               ");
-	printf("\n         opt: -n [filename] file name with wildcard.           ");
-	printf("\n         opt: -s include sub directory.                        ");
-	printf("\n         opt: -q be quiet, no output message.                  ");
-	printf("\n         opt: -h show help message          .                  ");
-	printf("\nSample:                                                        ");
-	printf("\n    1. $strings+ [path]                          ");
-	printf("\n    2. $strings+ [path] -name [filename]         ");
-	printf("\n    3. $strings+ [path] -name [*.*]              ");
-	printf("\n    3. $strings+ [path] -name [*.*] -r opt       ");
+	printf("\nFormat:                                                                                        ");
+	printf("\n[strings+] [path] [-n [filename]] [-q] [-l [length]] [-h]                                      ");
+	printf("\n    [strings+]      command name, if windows that is strings+.exe, if linux that is strings+   ");
+	printf("\n    [path]          source files' directory, example: c:\mydir  or /home/mydir                 ");
+	printf("\n    [-n [filename]] source files wildcard, example: -n *.exe                                   ");
+	printf("\n    [-q]            be quiet, no output message. example: -q                                   ");
+	printf("\n    [-l [length]]   filter string's max length, no less than 2. example: -l 3                  ");
+	printf("\n    [-h]            show help message.                                                         ");
+	printf("\nSample in windows:                                                                             ");
+	printf("\n    1. path:>strings+.exe [path]                scan all files in [path]                       ");
+	printf("\n    2. path:>strings+.exe [path] -n [filename]  scan [filename] in [path]                      ");
+	printf("\n    3. path:>strings+.exe [path] -n [*.*]       scan *.* in [path]                             ");
+	printf("\n    4. path:>strings+.exe [path] -n [*.exe] -l 3  scan string that length <= 3 from *.exe in [path]     ");
+	printf("\nSample in linux:                                                                               ");
+	printf("\n    1. $./strings+ [path]                scan all files in [path]                              ");
+	printf("\n    2. $./strings+ [path] -n [filename]  scan [filename] in [path]                             ");
+	printf("\n    3. $./strings+ [path] -n [*.*]       scan *.* in [path]                                    ");
+	printf("\n    4. $./strings+ [path] -n [*.exe] -l 3  scan string that length <= 3 from *.exe in [path]   ");
+	printf("\nOutput:                                                                                        ");
+	printf("\n    Output to a file named [path]/t.[filename].txt                                             ");
 	printf("\n");
 }
 
