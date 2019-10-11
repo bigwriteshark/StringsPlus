@@ -28,6 +28,7 @@ Output:
     
     
 【中文说明】
+
 strings+ 程序可以扫描二进制文件，打印出所有的ascii码字符串，和所有的unicode字符串。它可以运行在windows平台，或者linux平台。
 
 格式:
