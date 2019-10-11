@@ -1,14 +1,17 @@
-ï»¿[English readme]
+é”˜ç¸–English readme]
 strings+ command scan binary file, print all ascii strings and all unicode strings. it can run in windows and linux, it can run in x86 and x64.
 
 Format:
+
 [strings+] [path] [-n [filename]] [-q] [-l [length]] [-h]
+
     [strings+]      command name, if windows that is strings+.exe, if linux that is strings+
     [path]          source files' directory, example: c:\mydir  or /home/mydir
     [-n [filename]] source files wildcard, example: -n *.exe
     [-q]            be quiet, no output message. example: -q
-    [-l [length]]   filter string's max length, no less than 2. example: -l 3
+    [-l [length]]   filter string's max length, no less than 2. example: -l 3 
     [-h]            show help message.
+    
 Sample in windows:
     1. path:>strings+.exe [path]                scan all files in [path]
     2. path:>strings+.exe [path] -n [filename]  scan [filename] in [path]
@@ -24,28 +27,28 @@ Output:
     Output to a file named [path]/t.[filename].txt
     
     
-¡¾ÖĞÎÄËµÃ÷¡¿
-strings+ ³ÌĞò¿ÉÒÔÉ¨Ãè¶ş½øÖÆÎÄ¼ş£¬´òÓ¡³öËùÓĞµÄasciiÂë×Ö·û´®£¬ºÍËùÓĞµÄunicode×Ö·û´®¡£Ëü¿ÉÒÔÔËĞĞÔÚwindowsÆ½Ì¨£¬»òÕßlinuxÆ½Ì¨¡£
+ã€ä¸­æ–‡è¯´æ˜ã€‘
+strings+ ç¨‹åºå¯ä»¥æ‰«æäºŒè¿›åˆ¶æ–‡ä»¶ï¼Œæ‰“å°å‡ºæ‰€æœ‰çš„asciiç å­—ç¬¦ä¸²ï¼Œå’Œæ‰€æœ‰çš„unicodeå­—ç¬¦ä¸²ã€‚å®ƒå¯ä»¥è¿è¡Œåœ¨windowså¹³å°ï¼Œæˆ–è€…linuxå¹³å°ã€‚
 
-¸ñÊ½:
+æ ¼å¼:
 [strings+] [path] [-n [filename]] [-q] [-l [length]] [-h]
-    [strings+]      ÃüÁîÃû£¬Èç¹ûÊÇwindowsÔòÎªstrings+.exe£¬Èç¹ûÊÇlinuxÆ½Ì¨ÔòÊÇstrings+
-    [path]          ĞèÒªÉ¨ÃèµÄÎÄ¼şµÄËùÔÚÄ¿Â¼£¬Çë×¢ÒâÊÇÄ¿Â¼£¬¶ø²»ÊÇÈ«Â·¾¶Ãû£¨²»°üº¬ÎÄ¼şÃû£©£¬ÀıÈç: c:\mydir  or /home/mydir
-    [-n [filename]] -nÑ¡Ïî£ºÖ¸¶¨ÒªÉ¨ÃèµÄÎÄ¼şµÄÎÄ¼şÃû£¨¿ÉÒÔ°üº¬Í¨Åä·û*,?£©£¬ÀıÈç: -n *.exe£¬»òÕß-n my.bin
-    [-q]            -qÑ¡Ïî£ºÖ¸¶¨¾²Ä¬ÔËĞĞ£¬ÔËĞĞÊ±²»´òÓ¡Êä³ö½á¹û. ±ÈÈç: -q
-    [-l [length]]   -lÑ¡Ïî£ºÖ¸¶¨Ò»¸ö×Ö·û´®³¤¶È¹ıÂË£¬É¨Ãè³öÀ´µÄ×Ö·û´®Èç¹û³¤¶ÈĞ¡ÓÚÖ¸¶¨³¤¶È£¬Ôò±»ºöÂÔ£¬Õâ¸ö³¤¶È±ØĞë´óÓÚµÈÓÚ2. ÀıÈç: -l 3
-    [-h]            -hÑ¡Ïî£ºÏÔÊ¾°ïÖúĞÅÏ¢.
-windowsÏÂµÄÊ¹ÓÃ¾ÙÀı:
-    1. path:>strings+.exe [path]                  É¨Ãè[path]Ä¿Â¼ÏÂËùÓĞµÄÎÄ¼ş
-    2. path:>strings+.exe [path] -n [filename]    É¨Ãè[path]Ä¿Â¼ÏÂÆ¥Åä[filename]µÄÎÄ¼ş
-    3. path:>strings+.exe [path] -n [*.*]         É¨Ãè[path]Ä¿Â¼ÏÂËùÓĞµÄÎÄ¼ş
-    4. path:>strings+.exe [path] -n [*.exe] -l 3  É¨Ãè[path]Ä¿Â¼ÏÂ*.exeÇÒ³¤¶È<=3µÄ×Ö·û´®
+    [strings+]      å‘½ä»¤åï¼Œå¦‚æœæ˜¯windowsåˆ™ä¸ºstrings+.exeï¼Œå¦‚æœæ˜¯linuxå¹³å°åˆ™æ˜¯strings+
+    [path]          éœ€è¦æ‰«æçš„æ–‡ä»¶çš„æ‰€åœ¨ç›®å½•ï¼Œè¯·æ³¨æ„æ˜¯ç›®å½•ï¼Œè€Œä¸æ˜¯å…¨è·¯å¾„åï¼ˆä¸åŒ…å«æ–‡ä»¶åï¼‰ï¼Œä¾‹å¦‚: c:\mydir  or /home/mydir
+    [-n [filename]] -né€‰é¡¹ï¼šæŒ‡å®šè¦æ‰«æçš„æ–‡ä»¶çš„æ–‡ä»¶åï¼ˆå¯ä»¥åŒ…å«é€šé…ç¬¦*,?ï¼‰ï¼Œä¾‹å¦‚: -n *.exeï¼Œæˆ–è€…-n my.bin
+    [-q]            -qé€‰é¡¹ï¼šæŒ‡å®šé™é»˜è¿è¡Œï¼Œè¿è¡Œæ—¶ä¸æ‰“å°è¾“å‡ºç»“æœ. æ¯”å¦‚: -q
+    [-l [length]]   -lé€‰é¡¹ï¼šæŒ‡å®šä¸€ä¸ªå­—ç¬¦ä¸²é•¿åº¦è¿‡æ»¤ï¼Œæ‰«æå‡ºæ¥çš„å­—ç¬¦ä¸²å¦‚æœé•¿åº¦å°äºæŒ‡å®šé•¿åº¦ï¼Œåˆ™è¢«å¿½ç•¥ï¼Œè¿™ä¸ªé•¿åº¦å¿…é¡»å¤§äºç­‰äº2. ä¾‹å¦‚: -l 3
+    [-h]            -hé€‰é¡¹ï¼šæ˜¾ç¤ºå¸®åŠ©ä¿¡æ¯.
+windowsä¸‹çš„ä½¿ç”¨ä¸¾ä¾‹:
+    1. path:>strings+.exe [path]                  æ‰«æ[path]ç›®å½•ä¸‹æ‰€æœ‰çš„æ–‡ä»¶
+    2. path:>strings+.exe [path] -n [filename]    æ‰«æ[path]ç›®å½•ä¸‹åŒ¹é…[filename]çš„æ–‡ä»¶
+    3. path:>strings+.exe [path] -n [*.*]         æ‰«æ[path]ç›®å½•ä¸‹æ‰€æœ‰çš„æ–‡ä»¶
+    4. path:>strings+.exe [path] -n [*.exe] -l 3  æ‰«æ[path]ç›®å½•ä¸‹*.exeä¸”é•¿åº¦<=3çš„å­—ç¬¦ä¸²
     
 
 Sample in linux:
-    1. $./strings+ [path]                	   É¨Ãè[path]Ä¿Â¼ÏÂËùÓĞµÄÎÄ¼ş
-    2. $./strings+ [path] -n '[filename]'    É¨Ãè[path]Ä¿Â¼ÏÂÆ¥Åä[filename]µÄÎÄ¼ş
-    3. $./strings+ [path] -n '[*.*]'         É¨Ãè[path]Ä¿Â¼ÏÂËùÓĞµÄÎÄ¼ş
-    4. $./strings+ [path] -n '[*.exe]' -l 3  É¨Ãè[path]Ä¿Â¼ÏÂ*.exeÇÒ³¤¶È<=3µÄ×Ö·û´®
-Êä³ö½á¹û:
-    É¨Ãè³öÀ´µÄ×Ö·û´®£¬»á±£´æµ½Ò»¸öÎÄ±¾ÎÄ¼şÀï£¬¸ÃÊä³öÎÄ¼ş±£´æÔÚºÍÔ´ÎÄ¼şÏàÍ¬µÄÄ¿Â¼ÏÂ£¬Êä³öÎÄ¼şµÄÃû³ÆºÍÔ´ÎÄ¼şÃû³ÆÏàÆ¥Åä£¬Êä³öÎÄ¼şµÄÃû³ÆÑùÊ½Îª£º[path]/t.[Ô´ÎÄ¼şÃû].txt¡£
+    1. $./strings+ [path]                	   æ‰«æ[path]ç›®å½•ä¸‹æ‰€æœ‰çš„æ–‡ä»¶
+    2. $./strings+ [path] -n '[filename]'    æ‰«æ[path]ç›®å½•ä¸‹åŒ¹é…[filename]çš„æ–‡ä»¶
+    3. $./strings+ [path] -n '[*.*]'         æ‰«æ[path]ç›®å½•ä¸‹æ‰€æœ‰çš„æ–‡ä»¶
+    4. $./strings+ [path] -n '[*.exe]' -l 3  æ‰«æ[path]ç›®å½•ä¸‹*.exeä¸”é•¿åº¦<=3çš„å­—ç¬¦ä¸²
+è¾“å‡ºç»“æœ:
+    æ‰«æå‡ºæ¥çš„å­—ç¬¦ä¸²ï¼Œä¼šä¿å­˜åˆ°ä¸€ä¸ªæ–‡æœ¬æ–‡ä»¶é‡Œï¼Œè¯¥è¾“å‡ºæ–‡ä»¶ä¿å­˜åœ¨å’Œæºæ–‡ä»¶ç›¸åŒçš„ç›®å½•ä¸‹ï¼Œè¾“å‡ºæ–‡ä»¶çš„åç§°å’Œæºæ–‡ä»¶åç§°ç›¸åŒ¹é…ï¼Œè¾“å‡ºæ–‡ä»¶çš„åç§°æ ·å¼ä¸ºï¼š[path]/t.[æºæ–‡ä»¶å].txtã€‚
