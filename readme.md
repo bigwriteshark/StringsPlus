@@ -1,4 +1,4 @@
-锘縖English readme]
+[English readme]
 strings+ command scan binary file, print all ascii strings and all unicode strings. it can run in windows and linux, it can run in x86 and x64.
 
 Format:
